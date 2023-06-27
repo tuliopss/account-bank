@@ -22,16 +22,33 @@ function operation() {
     ])
     .then((answer) => {
       const action = answer["action"];
-      //   switch (action) {
-      //     case "Criar conta":
-      //       createAccount();
-      //       break;
 
-      //     default:
-      //       break;
-      //   }
-      if (action === "Criar conta") {
-        createAccount();
+      switch (action) {
+        case "Criar conta":
+          createAccount();
+          break;
+
+        case "Consultar saldo":
+          //to do
+          break;
+
+        case "Depositar":
+          //to do
+          break;
+
+        case "Sacar":
+          //to do
+          break;
+
+        case "Sair":
+          //to do
+          console.log(
+            chalk.bgBlue.black("Obrigado pela preferência, volte sempre!")
+          );
+          process.exit();
+          break;
+        default:
+          break;
       }
     })
     .catch((err) => console.log(err));
