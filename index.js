@@ -126,10 +126,10 @@ function deposit() {
           addAmount(accountName, amount);
           operation();
         })
-        .catch();
+        .catch((err) => console.log(err));
     })
 
-    .catch();
+    .catch((err) => console.log(err));
 }
 
 function checkAccount(accountName) {
@@ -189,7 +189,7 @@ function getAccountBalance() {
       console.log(chalk.bgBlue.black(`Saldo de: ${accountData.balance}`));
       operation();
     })
-    .catch();
+    .catch((err) => console.log(err));
 }
 
 function withdraw() {
@@ -214,9 +214,9 @@ function withdraw() {
           removeAmount(accountName, amount);
         })
 
-        .catch();
+        .catch((err) => console.log(err));
     })
-    .catch();
+    .catch((err) => console.log(err));
 }
 
 function removeAmount(accountName, amount) {
