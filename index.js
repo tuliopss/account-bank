@@ -16,6 +16,7 @@ function operation() {
           "Consultar saldo",
           "Depositar",
           "Sacar",
+          "Transferir",
           "Sair",
         ],
       },
@@ -40,8 +41,11 @@ function operation() {
           withdraw();
           break;
 
+        case "Transferir":
+          transferAmountAccounts();
+          break;
+
         case "Sair":
-          //to do
           console.log(
             chalk.bgBlue.black("Obrigado pela preferência, volte sempre!")
           );
@@ -240,5 +244,87 @@ function removeAmount(accountName, amount) {
     (err) => console.log(err)
   );
   console.log(chalk.bgGreen.black(`Foi realizado um saque de R$${amount}`));
+  operation();
+}
+
+function transferAmountAccounts() {
+  inquirer
+    .prompt([
+      {
+        name: "accountSender",
+        message: "Qual a sua conta?",
+      },
+    ])
+    .then((answer) => {
+      const accountSender = answer["accountSender"];
+
+      if (!checkAccount(accountSender)) {
+        return transferAmountAccounts();
+      }
+
+      inquirer
+        .prompt([
+          {
+            name: "accountReceiver",
+            message: "Para qual conta você deseja transferir?",
+          },
+        ])
+        .then((answer) => {
+          const accountReceiver = answer["accountReceiver"];
+          if (!checkAccount(accountReceiver)) {
+            return transferAmountAccounts();
+          }
+          inquirer
+            .prompt([
+              {
+                name: "amount",
+                message: "Qual o valor da transferência?",
+              },
+            ])
+            .then((answer) => {
+              const amount = answer["amount"];
+              transfer(accountSender, accountReceiver, amount);
+            });
+        });
+    });
+}
+
+function transfer(accountSender, accountReceiver, amount) {
+  const accountSenderData = getAccount(accountSender);
+  const accountReceiverData = getAccount(accountReceiver);
+
+  if (!amount) {
+    console.log(chalk.bgRed.black("Ocorreu um erro, tente novamente!"));
+    return;
+  }
+
+  if (accountSenderData.balance < amount) {
+    console.log(chalk.bgRed.black("Valor indisponível"));
+    return transferAmountAccounts();
+  }
+
+  accountSenderData.balance =
+    parseFloat(accountSenderData.balance) - parseFloat(amount);
+
+  accountReceiverData.balance =
+    parseFloat(accountReceiverData.balance) + parseFloat(amount);
+
+  fs.writeFileSync(
+    `accounts/${accountSender}.json`,
+    JSON.stringify(accountSenderData),
+    (err) => console.log(err)
+  );
+
+  fs.writeFileSync(
+    `accounts/${accountReceiver}.json`,
+    JSON.stringify(accountReceiverData),
+    (err) => console.log(err)
+  );
+  console.log(
+    chalk.bgGreen.black(
+      `Foi realizado uma transfêrencia de ${accountSender} para ${accountReceiver}, no valor de R$${amount}`
+    )
+  );
+
   operation();
 }
