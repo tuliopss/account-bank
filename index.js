@@ -292,6 +292,7 @@ function transferAmountAccounts() {
 function transfer(accountSender, accountReceiver, amount) {
   const accountSenderData = getAccount(accountSender);
   const accountReceiverData = getAccount(accountReceiver);
+  const date = new Date();
 
   if (!amount) {
     console.log(chalk.bgRed.black("Ocorreu um erro, tente novamente!"));
@@ -320,6 +321,8 @@ function transfer(accountSender, accountReceiver, amount) {
     JSON.stringify(accountReceiverData),
     (err) => console.log(err)
   );
+  saveHistory(accountSender, accountReceiver, amount, date);
+
   console.log(
     chalk.bgGreen.black(
       `Foi realizado uma transfêrencia de ${accountSender} para ${accountReceiver}, no valor de R$${amount}`
@@ -327,4 +330,49 @@ function transfer(accountSender, accountReceiver, amount) {
   );
 
   operation();
+}
+
+function formatTime(date) {
+  const month = date.getMonth() + 1;
+  const day = date.getDate();
+  const year = date.getFullYear();
+  const hours = date.getHours();
+  const minutes = date.getMinutes();
+
+  const formattedMonth = month < 10 ? `0${month}` : month;
+  const formattedDay = day < 10 ? `0${day}` : day;
+  const formattedHours = hours < 10 ? `0${hours}` : hours;
+  const formattedMinutes = minutes < 10 ? `0${minutes}` : minutes;
+
+  return `${formattedMonth} - ${formattedDay} - ${year} at ${formattedHours}:${formattedMinutes}`;
+}
+
+function saveHistory(accountSender, accountReceiver, amount, date) {
+  if (!fs.existsSync("history")) {
+    fs.mkdirSync("history");
+  }
+
+  const historyFilePath = "history/transferHistory.json";
+
+  const transferData = {
+    "Sent by": accountSender,
+    "Received by": accountReceiver,
+    Value: amount,
+    Date: formatTime(date),
+  };
+
+  let transferArray = [];
+
+  if (fs.existsSync(historyFilePath)) {
+    const existingData = fs.readFileSync(historyFilePath, "utf-8");
+    if (existingData) {
+      transferArray = JSON.parse(existingData);
+    }
+  }
+
+  transferArray.push(transferData);
+
+  const transferArrayJSON = JSON.stringify(transferArray);
+
+  fs.writeFileSync(historyFilePath, transferArrayJSON);
 }
