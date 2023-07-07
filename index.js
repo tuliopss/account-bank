@@ -17,6 +17,7 @@ function operation() {
           "Depositar",
           "Sacar",
           "Transferir",
+          "Ver histórico",
           "Sair",
         ],
       },
@@ -43,6 +44,10 @@ function operation() {
 
         case "Transferir":
           transferAmountAccounts();
+          break;
+
+        case "Ver histórico":
+          getAccountHistory();
           break;
 
         case "Sair":
@@ -332,21 +337,6 @@ function transfer(accountSender, accountReceiver, amount) {
   operation();
 }
 
-function formatTime(date) {
-  const month = date.getMonth() + 1;
-  const day = date.getDate();
-  const year = date.getFullYear();
-  const hours = date.getHours();
-  const minutes = date.getMinutes();
-
-  const formattedMonth = month < 10 ? `0${month}` : month;
-  const formattedDay = day < 10 ? `0${day}` : day;
-  const formattedHours = hours < 10 ? `0${hours}` : hours;
-  const formattedMinutes = minutes < 10 ? `0${minutes}` : minutes;
-
-  return `${formattedMonth} - ${formattedDay} - ${year} at ${formattedHours}:${formattedMinutes}`;
-}
-
 function saveHistory(accountSender, accountReceiver, amount, date) {
   if (!fs.existsSync("history")) {
     fs.mkdirSync("history");
@@ -355,8 +345,8 @@ function saveHistory(accountSender, accountReceiver, amount, date) {
   const historyFilePath = "history/transferHistory.json";
 
   const transferData = {
-    "Sent by": accountSender,
-    "Received by": accountReceiver,
+    SentBy: accountSender,
+    ReceivedBy: accountReceiver,
     Value: amount,
     Date: formatTime(date),
   };
@@ -375,4 +365,44 @@ function saveHistory(accountSender, accountReceiver, amount, date) {
   const transferArrayJSON = JSON.stringify(transferArray);
 
   fs.writeFileSync(historyFilePath, transferArrayJSON);
+}
+
+function formatTime(date) {
+  const month = date.getMonth() + 1;
+  const day = date.getDate();
+  const year = date.getFullYear();
+  const hours = date.getHours();
+  const minutes = date.getMinutes();
+
+  const formattedMonth = month < 10 ? `0${month}` : month;
+  const formattedDay = day < 10 ? `0${day}` : day;
+  const formattedHours = hours < 10 ? `0${hours}` : hours;
+  const formattedMinutes = minutes < 10 ? `0${minutes}` : minutes;
+
+  return `${formattedMonth} - ${formattedDay} - ${year} at ${formattedHours}:${formattedMinutes}`;
+}
+
+function getAccountHistory() {
+  inquirer
+    .prompt([
+      {
+        name: "accountName",
+        message: "Qual sua conta?",
+      },
+    ])
+    .then((answer) => {
+      const accountName = answer["accountName"];
+
+      const history = JSON.parse(
+        fs.readFileSync("history/transferHistory.json")
+      );
+
+      for (let i = 0; i < history.length; i++) {
+        const accountSenderName = history[i].SentBy;
+        if (accountName == accountSenderName) {
+          console.log(history[i]);
+        }
+      }
+    })
+    .catch((err) => console.log(err));
 }

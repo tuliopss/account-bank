@@ -1,26 +1,26 @@
 [
   {
-    "Sent by": "t1",
-    "Received by": "t2",
+    "SentBy": "t1",
+    "ReceivedBy": "t2",
     "Value": "1",
-    "Date": "7 - 7 - 2023 at 13:52"
+    "Date": "07 - 07 - 2023 at 14:59"
   },
   {
-    "Sent by": "t2",
-    "Received by": "t1",
-    "Value": "3",
-    "Date": "7 - 7 - 2023 at 13:52"
+    "SentBy": "t2",
+    "ReceivedBy": "t1",
+    "Value": "1",
+    "Date": "07 - 07 - 2023 at 14:59"
   },
   {
-    "Sent by": "tulio",
-    "Received by": "t1",
-    "Value": "100",
-    "Date": "7 - 7 - 2023 at 13:52"
+    "SentBy": "Fundo",
+    "ReceivedBy": "t1",
+    "Value": "2000",
+    "Date": "07 - 07 - 2023 at 15:23"
   },
   {
-    "Sent by": "t1",
-    "Received by": "t2",
-    "Value": "10",
-    "Date": "07 - 07 - 2023 at 14:00"
+    "SentBy": "t1",
+    "ReceivedBy": "t2",
+    "Value": "300",
+    "Date": "07 - 07 - 2023 at 15:24"
   }
 ]
